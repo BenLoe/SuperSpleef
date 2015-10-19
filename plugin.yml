@@ -1,0 +1,11 @@
+name: SuperSpleef
+main: me.BenLoe.SuperSpleef.Main
+version: 1.0
+description: >
+             Super Spleef Plugin
+commands:
+  SS:
+    description: Staff Command
+  Leave:
+    description: Leave                                      
+                                        
