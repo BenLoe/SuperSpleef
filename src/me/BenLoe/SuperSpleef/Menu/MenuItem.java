@@ -27,23 +27,23 @@ public enum MenuItem {
 	public void wasClicked(Player p){
 		switch(this){
 		case BUY_BEASTTAMER:
-			if ((MoneyAPI.getMoney(p) >= 350000) && (Stats.getStats(p.getName()).getGamesPlayed() >= 50) && (Stats.getStats(p.getName()).getWins() >= 25) && !KitType.BEASTTAMER.ownsKit(p)){
+			if ((MoneyAPI.getMoney(p) >= 350000) && (Stats.getStats(p).getGamesPlayed() >= 50) && (Stats.getStats(p).getWins() >= 25) && !KitType.BEASTTAMER.ownsKit(p)){
 				KitType.BEASTTAMER.buyKit(p);
 				p.sendMessage("§aYou bought the §bBeastTamer §akit.");
 				p.closeInventory();
 				MoneyAPI.removeMoney(p, 350000);
 			}else{
-				p.playSound(p.getLocation(), Sound.ANVIL_LAND, 0.5f, 1f);
+				p.playSound(p.getLocation(), Sound.NOTE_BASS, 1f, 1f);
 			}
 			break;
 		case BUY_TANK:
-			if ((MoneyAPI.getMoney(p) >= 250000) && (Stats.getStats(p.getName()).getGamesPlayed() >= 30) && (Stats.getStats(p.getName()).getWins() >= 15) && !KitType.TANK.ownsKit(p)){
+			if ((MoneyAPI.getMoney(p) >= 250000) && (Stats.getStats(p).getGamesPlayed() >= 30) && (Stats.getStats(p).getWins() >= 15) && !KitType.TANK.ownsKit(p)){
 				KitType.TANK.buyKit(p);
 				p.sendMessage("§aYou bought the §bTank §akit.");
 				p.closeInventory();
 				MoneyAPI.removeMoney(p, 250000);
 			}else{
-				p.playSound(p.getLocation(), Sound.ANVIL_LAND, 0.5f, 1f);
+				p.playSound(p.getLocation(), Sound.NOTE_BASS, 1f, 1f);
 			}
 			break;
 		case SHOW_STATS:
@@ -63,7 +63,7 @@ public enum MenuItem {
 			lore.add("§a350,000$");
 			lore.add("  ");
 			if (!KitType.BEASTTAMER.ownsKit(p)){
-			if (!(MoneyAPI.getMoney(p) >= 350000) || !(Stats.getStats(p.getName()).getGamesPlayed() >= 50) || !(Stats.getStats(p.getName()).getWins() >= 25)){
+			if (!(MoneyAPI.getMoney(p) >= 350000) || !(Stats.getStats(p).getGamesPlayed() >= 50) || !(Stats.getStats(p).getWins() >= 25)){
 				lore.add("§cYou can't afford to buy this.");
 			}
 			}else{
@@ -81,7 +81,7 @@ public enum MenuItem {
 			lore.add("§a250,000$");
 			lore.add("  ");
 			if (!KitType.TANK.ownsKit(p)){
-			if (!(MoneyAPI.getMoney(p) >= 250000) || !(Stats.getStats(p.getName()).getGamesPlayed() >= 30) || !(Stats.getStats(p.getName()).getWins() >= 13)){
+			if (!(MoneyAPI.getMoney(p) >= 250000) || !(Stats.getStats(p).getGamesPlayed() >= 30) || !(Stats.getStats(p).getWins() >= 13)){
 				lore.add("§cYou can't afford to buy this.");
 			}
 			}else{
@@ -93,8 +93,8 @@ public enum MenuItem {
 			List<String> lore = new ArrayList<String>();
 			lore.add("  ");
 			lore.add("§7 Money: §a" + MoneyAPI.getMoney(p));
-			lore.add("§7 Games Played: §9" + Stats.getStats(p.getName()).getGamesPlayed());
-			lore.add("§7 Wins: §b" + Stats.getStats(p.getName()).getWins());
+			lore.add("§7 Games Played: §9" + Stats.getStats(p).getGamesPlayed());
+			lore.add("§7 Wins: §b" + Stats.getStats(p).getWins());
 			return ItemAPI.getItem(Material.BOOK, "§e§lPersonal Information:", lore);
 		}
 		}

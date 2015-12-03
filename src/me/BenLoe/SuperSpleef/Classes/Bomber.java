@@ -46,11 +46,10 @@ public class Bomber {
 			p.sendMessage(ChatColor.RED + "Cooldown: " + ChatColor.YELLOW + cooldown2.get(p.getName()) + ChatColor.RED + ".");
 			return;
 		}
-		cooldown2.put(p.getName(), 6.0);
-		Item i = p.getWorld().dropItem(p.getLocation().clone().add(0, 5, 0), new ItemStack(Material.TNT));
+		cooldown2.put(p.getName(), 2.0);
+		Item i = p.getWorld().dropItem(p.getLocation().clone().add(0, 1.8, 0), new ItemStack(Material.TNT));
 		i.setPickupDelay(1000);
-		i.teleport(i.getLocation().clone().subtract(0, 1.8, 0));
-		i.setVelocity(p.getLocation().getDirection().multiply(0.5));
+		i.setVelocity(p.getLocation().getDirection().multiply(0.7));
 		Game.playSound(Sound.FIZZ, p.getLocation(), 0.6f, 0.3f);
 		tnts.add(i.getUniqueId());
 	}
@@ -58,9 +57,9 @@ public class Bomber {
 		for (Item i : Bukkit.getWorld("PrisonMap").getEntitiesByClass(Item.class)){
 			if (tnts.contains(i.getUniqueId())){
 				ParticleEffect.SMOKE_NORMAL.display(0.25f, 0.25f, 0.25f, 0.0001f, 5, i.getLocation().clone().add(0, 0.5, 0), 100);
-				if (i.getTicksLived() > 50){
+				if (i.getTicksLived() > 30){
 					ParticleEffect.EXPLOSION_HUGE.display(1f, 1f, 1f, 0.1f, 20, i.getLocation().clone().add(0, 1, 0), 100);
-					for (Entity e : i.getNearbyEntities(4, 4, 4)){
+					for (Entity e : i.getNearbyEntities(5, 5, 5)){
 						if (e instanceof Player){
 							Location midPoint = i.getLocation();
 							Vector direction = e.getLocation().toVector().subtract(midPoint.toVector()).normalize();
@@ -89,8 +88,8 @@ public class Bomber {
 					}
 					for (Location loc : blocks){
 						Random r = new Random();
-						int i1 = r.nextInt(2) + 1;
-						if (Game.isBreakable(loc.getBlock().getType()) && i1 == 1){
+						int i1 = r.nextInt(3) + 1;
+						if (Game.isBreakable(loc.getBlock().getType()) && (i1 == 1 || i1 == 2)){
 							loc.getBlock().setType(Material.AIR);
 						}
 					}

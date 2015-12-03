@@ -1,6 +1,7 @@
 package me.BenLoe.SuperSpleef;
 
 import java.util.List;
+import java.util.Random;
 
 import me.BenLoe.SuperSpleef.Classes.BeastTamer;
 import me.BenLoe.SuperSpleef.Classes.Bomber;
@@ -13,6 +14,7 @@ import me.BenLoe.SuperSpleef.Menu.MenuItem;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.md_5.bungee.api.ChatColor;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -166,31 +168,34 @@ public class Events implements Listener {
 			Location loc2 = Game.getLocation("Sign");
 			if (loc.getBlockX() == loc2.getBlockX() && loc.getBlockY() == loc2.getBlockY() && loc.getBlockZ() == loc2.getBlockZ()){
 				Game.addToQueue(p);
+				Sign s = (Sign) loc.getBlock().getState();
+				s.setLine(3, "§eIn queue: §b" + Game.inqueue.size());
+				s.update();
 				return;
 			}
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
 	@EventHandler
 	public void playerMove(PlayerMoveEvent event){
 		Player p = event.getPlayer();
+		if (event.getTo().getBlockX() != event.getFrom().getBlockX() || event.getTo().getBlockZ() != event.getFrom().getBlockZ()){
+		}
 		if (Game.playerInGame(p)){
 			if (p.getLocation().getBlockY() <= 44){
 				if (Game.getGameState() == GameState.INGAME){
 				Game.Die(p);
-				}else if (Game.getGameState() == GameState.WARMUP){
-					p.teleport(Game.getLocation("Spawn1"));
+				}else if (Game.getGameState() == GameState.WARMUP || Game.getGameState() == GameState.WIN){
+					Random r = new Random();
+					int i = r.nextInt(8) + 1;
+					p.teleport(Game.getLocation("Spawn" + i));
 				}
 			}
 		}
 		if (!Game.watching.contains(p.getName())){
-			List<Vector> vectors = (List<Vector>) Files.getDataFile().getList("Watching");
-			for (Vector v : vectors){
-				if (p.getLocation().getBlock().getLocation().getBlockX() == v.getBlockX() && p.getLocation().getBlock().getLocation().getBlockZ() == v.getBlockZ()){
-					Game.watching.add(p.getName());
-					break;
-				}
+			if ((event.getTo().getBlockX() != event.getFrom().getBlockX() || event.getTo().getBlockZ() != event.getFrom().getBlockZ())){
+			if ( p.getLocation().getBlock().getLocation().distance(new Location(Bukkit.getWorld("PrisonMap"), -319, 54, 295)) <= 26){
+				Game.watching.add(p.getName());
+			}
 			}
 		}else{
 			if (p.getLocation().clone().subtract(0, 1, 0).getBlock().getType() != Material.SMOOTH_BRICK && p.getLocation().clone().subtract(0, 3, 0).getBlock().getType() != Material.SMOOTH_BRICK && p.getLocation().clone().subtract(0, 2, 0).getBlock().getType() != Material.SMOOTH_BRICK){
@@ -205,7 +210,7 @@ public class Events implements Listener {
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void playerHitPlayer(EntityDamageByEntityEvent event){
-		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player){
+		if (event.getEntity() instanceof Player && event.getDamager() instanceof Player && Game.gs == GameState.INGAME){
 			Player p = (Player) event.getEntity();
 			Player damager = (Player) event.getDamager();
 			if (Game.playerInGame(p)){

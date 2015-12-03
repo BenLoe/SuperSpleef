@@ -12,6 +12,8 @@ import me.BenLoe.SuperSpleef.Classes.Tank;
 import net.md_5.bungee.api.ChatColor;
 
 import org.Prison.Main.Currency.MoneyAPI;
+import org.Prison.Main.Letter.LetterType;
+import org.Prison.Main.Traits.SpeedTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -118,9 +120,9 @@ public class Game {
 			if (p.getGameMode() != GameMode.SURVIVAL){
 				p.setGameMode(GameMode.SURVIVAL);
 			}
-			Location loc = Game.getLocation("Spawn" + i);
+			Location loc = Game.getLocation("Spawn" + i).add(0.5, 1, 0.5);
 			p.teleport(loc);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20, 2));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 2));
 			invs.put(p.getName(), p.getInventory().getContents());
 			armors.put(p.getName(), p.getInventory().getArmorContents());
 			p.getInventory().clear();
@@ -129,7 +131,8 @@ public class Game {
 			p.getInventory().setChestplate(null);
 			p.getInventory().setHelmet(null);
 			p.updateInventory();
-			ParticleEffect.FIREWORKS_SPARK.display(0.5f, 1f, 0.5f, 0.1f, 20, loc.add(0, 0.5, 0), 100);
+			p.setWalkSpeed(0.2f);
+			ParticleEffect.FIREWORKS_SPARK.display(0.5f, 1f, 0.5f, 0.05f, 20, loc, 100);
 			ingame.add(p.getName());
 		}
 		inqueue.removeAll(ingame);
@@ -174,9 +177,16 @@ public class Game {
 		sendToAllPlus("");
 		sendToAllPlus("§b✦§a-----------------------§b✦");
 		if (p != null){
-			p.sendMessage(ChatColor.GREEN + "+25,000$");
-			MoneyAPI.addMoney(p, 25000);
-			Stats.getStats(p.getName()).addWins(1).addGamesPlayed(1);
+			int needed = 0;
+			if (LetterType.getPlayerLetter(p) == LetterType.A){
+				needed = 2000;
+			}else{
+				needed = LetterType.getPlayerLetter(p).getNeeded().getMoney();
+			}
+			int amount = Math.round(needed / 19);
+			p.sendMessage(ChatColor.GREEN + "+" + amount + "$");
+			MoneyAPI.addMoney(p, amount);
+			Stats.getStats(p).addWins(1).addGamesPlayed(1);
 		}
 	}
 	
@@ -185,6 +195,7 @@ public class Game {
 		Game.ingame.remove(p.getName());
 		Game.watching.add(p.getName());
 		p.teleport(getLocation("Lobby"));
+		SpeedTrait.setCorrectSpeed(p);
 		p.getInventory().clear();
 		p.getInventory().clear();
 		p.getInventory().setBoots(null);
@@ -195,11 +206,18 @@ public class Game {
 		p.getInventory().setContents(Game.invs.get(p.getName()));
 		p.getInventory().setArmorContents(Game.armors.get(p.getName()));
 		p.updateInventory();
-		Stats.getStats(p.getName()).addGamesPlayed(1);
+		Stats.getStats(p).addGamesPlayed(1);
 		for (String s : Game.ingame){
 			Player p1 = Bukkit.getPlayer(s);
-			p1.sendMessage(ChatColor.GREEN + "+1000$");
-			MoneyAPI.addMoney(p1, 1000);
+			int needed = 0;
+			if (LetterType.getPlayerLetter(p1) == LetterType.A){
+				needed = 2000;
+			}else{
+				needed = LetterType.getPlayerLetter(p1).getNeeded().getMoney();
+			}
+			int amount = Math.round(needed / 55);
+			p1.sendMessage(ChatColor.GREEN + "+" + amount + "$");
+			MoneyAPI.addMoney(p1, amount);
 		}
 		if (Bomber.ultimate.contains(p.getName())){
 			Bomber.ultimate.remove(p.getName());

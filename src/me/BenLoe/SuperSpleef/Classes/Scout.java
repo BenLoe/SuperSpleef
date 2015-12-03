@@ -16,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -79,25 +80,17 @@ public class Scout {
 				p.sendMessage(ChatColor.RED + "Cooldown: " + ChatColor.YELLOW + cooldown2.get(p.getName()) + ChatColor.RED + ".");
 				return;
 			}
-			cooldown2.put(p.getName(), 2.0);
+			cooldown2.put(p.getName(), 1.0);
 			ItemStack potion = new ItemStack(373, 1, (byte) 16418);
-			Item item1 = p.getWorld().dropItem(p.getLocation().add(0, 2, 0), potion);
-			Item item2 = p.getWorld().dropItem(p.getLocation().add(0, 2, 0), potion);
-			Item item3 = p.getWorld().dropItem(p.getLocation().add(0, 2, 0), potion);
-			Item item4 = p.getWorld().dropItem(p.getLocation().add(0, 2, 0), potion);
+			Location location = p.getLocation().toVector().add(p.getLocation().getDirection().multiply(1.2)).toLocation(p.getWorld()).add(0, 1.2, 0);
+			final Item item1 = p.getWorld().dropItem(location, potion);
+			final Item item2 = p.getWorld().dropItem(location, potion);
+			final Item item3 = p.getWorld().dropItem(location, potion);
+			final Item item4 = p.getWorld().dropItem(location, potion);
 			item1.setPickupDelay(1000);
 			item2.setPickupDelay(1000);
 			item3.setPickupDelay(1000);
 			item4.setPickupDelay(1000);
-			potionItems.add(item1.getUniqueId());
-			potionItems.add(item2.getUniqueId());
-			potionItems.add(item3.getUniqueId());
-			potionItems.add(item4.getUniqueId());
-			Location location = p.getLocation().toVector().add(p.getLocation().getDirection().multiply(0.5)).toLocation(p.getWorld()).add(0, 1.2, 0);
-			item1.teleport(location);
-			item2.teleport(location);
-			item3.teleport(location);
-			item4.teleport(location);
 			Random r = new Random();
 			int i1 = r.nextInt(10) + 85;
 			int i2 = r.nextInt(10) + 85;
@@ -112,21 +105,31 @@ public class Scout {
 			item3.setVelocity(getDirection(p, i5, i6));
 			item4.setVelocity(getDirection(p, i7, i8));
 			Game.playSound(Sound.DIG_SNOW, p.getLocation(), 1f, 1f);
+			Bukkit.getScheduler().runTaskLater(Main.getPlugin(Main.class), new Runnable(){
+				public void run(){
+					potionItems.add(item1.getUniqueId());
+					potionItems.add(item2.getUniqueId());
+					potionItems.add(item3.getUniqueId());
+					potionItems.add(item4.getUniqueId());
+				}
+			}, 5l);
 		}
 		
 		@SuppressWarnings("deprecation")
 		public static void checkSecond(){
 			for (Item i : Bukkit.getWorld("PrisonMap").getEntitiesByClass(Item.class)){
 				if (potionItems.contains(i.getUniqueId())){
-					for (String s : Game.ingame){
-						Player p = Bukkit.getPlayer(s);
-						if (p.getLocation().distance(i.getLocation()) <= 1){
+					boolean bo = false;
+					for (Entity e : i.getNearbyEntities(1, 1, 1)){
+						if (e instanceof Player){
+							Player p = (Player) e;
 							p.damage(0.0);
 							p.setVelocity(i.getVelocity().multiply(0.7));
 							potionItems.remove(i.getUniqueId());
 							ParticleEffect.CRIT_MAGIC.display(0.2f, 1f, 0.2f, 0.1f, 6, p.getLocation().add(0, 0.2, 0), 100);
 							i.teleport(i.getLocation().subtract(0, 500, 0));
-						}else if (i.getLocation().subtract(0, 0.5, 0).getBlock().getType() != Material.AIR){
+						}
+						if (!bo && i.getLocation().subtract(0, 0.5, 0).getBlock().getType() != Material.AIR){
 							if (Game.isBreakable(i.getLocation().subtract(0, 0.5, 0).getBlock().getType())){				
 							ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(Material.SEA_LANTERN, (byte) 0), 0.3f, 0.2f, 0.3f, 0.1f, 15, i.getLocation(), 100);
 							Block b = i.getLocation().subtract(0, 0.5, 0).getBlock();
@@ -136,10 +139,15 @@ public class Scout {
 							b.getWorld().spawnFallingBlock(b.getLocation(), m, by);
 							Game.playSound(Sound.GLASS, i.getLocation(), 1f, 1f);
 							}
+							potionItems.remove(i.getUniqueId());
 							i.teleport(i.getLocation().subtract(0, 500, 0));
-						}
 					}
 				}
+				if (i.getTicksLived() > 2 * 20){
+					potionItems.remove(i.getUniqueId());
+					i.remove();
+				}
+			}
 			}
 		}
 		
@@ -169,7 +177,7 @@ public class Scout {
 								public void run(){
 									third.remove(loc);
 								}
-							}, 80l);
+							}, 65l);
 						}
 						i.teleport(i.getLocation().subtract(0, 500, 0));
 					}
@@ -202,19 +210,12 @@ public class Scout {
 					}
 					Random r = new Random();
 					int i = r.nextInt(blocks.size());
-					int i2 = r.nextInt(blocks.size());
 					Block b = blocks.get(i).getBlock();
 					Material m = b.getType();
 					Byte by = b.getData();
 					b.setType(Material.AIR);
 					FallingBlock fb = b.getWorld().spawnFallingBlock(b.getLocation(), m, by);
 					fb.setVelocity(new Vector(0, 0.3, 0));
-					Block b1 = blocks.get(i2).getBlock();
-					Material m1 = b1.getType();
-					Byte by1 = b1.getData();
-					b1.setType(Material.AIR);
-					FallingBlock fb1 = b1.getWorld().spawnFallingBlock(b1.getLocation(), m1, by1);
-					fb1.setVelocity(new Vector(0, 0.3, 0));
 				}
 			}
 		}
@@ -225,7 +226,7 @@ public class Scout {
 			double x = Math.sin(pitch) * Math.cos(yaw);
 			double z = Math.sin(pitch) * Math.sin(yaw);
 			double y = Math.cos(pitch);
-			return new Vector(x, y, z).multiply(1.4);
+			return new Vector(x, y, z).multiply(1.6);
 		}
 		
 		public static void giveItems(Player p){

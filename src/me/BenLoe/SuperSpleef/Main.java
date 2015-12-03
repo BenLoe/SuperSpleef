@@ -35,12 +35,12 @@ public class Main extends JavaPlugin{
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 			public void run(){
 				GameManager.manage();
+				BeastTamer.checkSecond();
 			}
 		}, 20l, 20l);
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 			public void run(){
 				Scout.checkCooldown();
-				Scout.checkThird2();
 				Bomber.checkCooldown();
 				Bomber.checkSecond();
 				Tank.checkCooldown();
@@ -51,6 +51,7 @@ public class Main extends JavaPlugin{
 			public void run(){
 				Scout.checkSecond();
 				Scout.checkThird1();
+				Scout.checkThird2();
 				Bomber.checkThird();
 				Tank.checkFirst();
 				BeastTamer.checkFirst();
@@ -130,8 +131,8 @@ public class Main extends JavaPlugin{
 							Location loc = blocks1.get(i);
 							Block b = loc.getBlock();
 							if (!b.getType().equals(Material.AIR)){
-								b.getLocation().clone().subtract(0, 25, 0).getBlock().setType(b.getType());
-								b.getLocation().clone().subtract(0, 25, 0).getBlock().setData(b.getData());
+								b.getLocation().clone().subtract(0, 40, 0).getBlock().setType(b.getType());
+								b.getLocation().clone().subtract(0, 40, 0).getBlock().setData(b.getData());
 							}
 						}
 						p.sendMessage(ChatColor.GREEN + "Done!");

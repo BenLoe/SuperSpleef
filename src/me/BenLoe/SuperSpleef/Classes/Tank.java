@@ -62,12 +62,12 @@ public class Tank {
 			p.sendMessage(ChatColor.RED + "Cooldown: " + ChatColor.YELLOW + cooldown1.get(p.getName()) + ChatColor.RED + ".");
 			return;
 		}
-		cooldown1.put(p.getName(), 1.0);
+		cooldown1.put(p.getName(), 2.0);
 		Location location = p.getLocation().toVector().add(p.getLocation().getDirection().multiply(0.5)).toLocation(p.getWorld()).clone().add(0, 1.5, 0);
 		final FallingBlock f = p.getWorld().spawnFallingBlock(location, Material.COBBLESTONE, (byte)0);
 		f.setDropItem(false);
 		f.setFallDistance(1000f);
-		f.setVelocity(p.getLocation().getDirection().multiply(2));
+		f.setVelocity(p.getLocation().getDirection().multiply(1.8));
 		Game.playSound(Sound.DIG_STONE, p.getLocation(), 1f, 0.5f);
 		Bukkit.getScheduler().runTaskLater(Main.getPlugin(Main.class), new Runnable(){
 			public void run(){
@@ -86,7 +86,7 @@ public class Tank {
 					if (e instanceof Player){
 						bo = true;
 						ParticleEffect.BLOCK_CRACK.display(new ParticleEffect.BlockData(Material.COBBLESTONE, (byte) 0), 0.4f, 0.5f, 0.4f, 0.1f, 100, e.getLocation().clone().add(0, 1.3, 0), 100);
-						e.setVelocity(f.getVelocity().setY(0.3));
+						e.setVelocity(f.getVelocity().multiply(0.5).setY(0.2));
 						((Player) e).damage(0.0);
 						f.getLocation().getBlock().setType(Material.AIR);
 						remove.add(f);

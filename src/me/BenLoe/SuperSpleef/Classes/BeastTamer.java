@@ -33,6 +33,8 @@ public class BeastTamer {
 	public static HashMap<String,Double> cooldown3 = new HashMap<String,Double>();
 	public static List<UUID> creeps = new ArrayList<UUID>();
 	public static List<UUID> pigs = new ArrayList<UUID>();
+	public static HashMap<UUID,Vector> pigvs = new HashMap<>();
+	public static HashMap<UUID,String> wolfs = new HashMap<>();
 
 	public static void attemptFirst(Player p){
 		if (cooldown1.containsKey(p.getName())){
@@ -41,8 +43,10 @@ public class BeastTamer {
 		}
 		cooldown1.put(p.getName(), 2.0);
 		Location location = p.getLocation().toVector().add(p.getLocation().getDirection().multiply(1.2)).toLocation(p.getWorld()).clone().add(0, 1.8, 0);
-		final Pig pig = (Pig) p.getWorld().spawnEntity(location, EntityType.PIG);
-		pig.setVelocity(p.getLocation().getDirection().multiply(1.8));
+		location.setDirection(p.getLocation().getDirection());
+		final Pig pig = (Pig) p.getWorld().spawnEntity(location, EntityType.PIG);		
+		pig.setVelocity(p.getLocation().clone().getDirection().multiply(1.2));
+		pigvs.put(pig.getUniqueId(), p.getLocation().clone().getDirection().multiply(1.2));
 		Game.playSound(Sound.PIG_DEATH, p.getLocation(), 1f, 0.5f);
 		Bukkit.getScheduler().runTaskLater(Main.getPlugin(Main.class), new Runnable(){
 			public void run(){
@@ -55,30 +59,42 @@ public class BeastTamer {
 		for (Pig pig : Bukkit.getWorld("PrisonMap").getEntitiesByClass(Pig.class)){
 			if (pigs.contains(pig.getUniqueId())){
 				boolean bo = true;
-				for (Entity e : pig.getNearbyEntities(1.1, 1, 1.1)){
+				for (Entity e : pig.getNearbyEntities(0.8, 0.8, 0.8)){
 					if (e instanceof Player){
 						bo = false;
 						((Player) e).damage(0.0);
-						e.setVelocity(pig.getVelocity().setY(0.8));
-						ParticleEffect.FIREWORKS_SPARK.display(0.6f, 0.6f, 0.6f, 0.1f, 50, pig.getLocation(), 100);
-						ParticleEffect.EXPLOSION_NORMAL.display(0.6f, 0.6f, 0.6f, 0.1f, 50, pig.getLocation(), 100);
+						e.setVelocity(pig.getVelocity().setY(0.2));
 						pigs.remove(pig.getUniqueId());
+						pigvs.remove(pig.getUniqueId());
 						pig.teleport(pig.getLocation().clone().subtract(0, 500, 0));
 					}
 				}
 				if (bo){
-					if (pig.getLocation().clone().subtract(0, 0.5, 0).getBlock().getType() != Material.AIR){
-						if (Game.isBreakable(pig.getLocation().clone().subtract(0, 0.5, 0).getBlock().getType())){
-						pig.getLocation().clone().subtract(0, 0.5, 0).getBlock().setType(Material.AIR);
+					pig.setVelocity(pigvs.get(pig.getUniqueId()));
+					if (pig.getLocation().clone().subtract(0, 0.3, 0).getBlock().getType() != Material.AIR){
+						if (Game.isBreakable(pig.getLocation().clone().subtract(0, 0.3, 0).getBlock().getType())){
+						pig.getLocation().clone().subtract(0, 0.3, 0).getBlock().setType(Material.AIR);
 						}
-						ParticleEffect.FIREWORKS_SPARK.display(0.6f, 0.6f, 0.6f, 0.1f, 50, pig.getLocation(), 100);
-						ParticleEffect.EXPLOSION_NORMAL.display(0.6f, 0.6f, 0.6f, 0.1f, 50, pig.getLocation(), 100);
 						pigs.remove(pig.getUniqueId());
 						pig.teleport(pig.getLocation().subtract(0, 500, 0));
+					}else{
+					Location location = pig.getLocation().toVector().add(pig.getLocation().clone().getDirection().multiply(2)).toLocation(pig.getWorld()).clone().add(0, 0.4, 0);
+					if (location.getBlock().getType() != Material.AIR){
+						if (Game.isBreakable(location.getBlock().getType())){
+							location.getBlock().setType(Material.AIR);
+						}
+						pigs.remove(pig.getUniqueId());
+						pigvs.remove(pig.getUniqueId());
+						pig.remove();
+					}else if (pig.getTicksLived() > 60){
+						pigs.remove(pig.getUniqueId());
+						pigvs.remove(pig.getUniqueId());
+						pig.remove();
 					}
 				}
+				}
 				Location location = pig.getLocation().toVector().add(pig.getLocation().clone().getDirection().multiply(-1.7)).toLocation(pig.getWorld()).clone().add(0, 0.4, 0);
-				ParticleEffect.FIREWORKS_SPARK.display(0.01f, 0.01f,01f, 0.01f, 1, location, 100);
+				ParticleEffect.FIREWORKS_SPARK.display(0.01f, 0.01f, 0.01f, 0.0f, 1, location, 100);
 			}
 		}
 	}
@@ -97,6 +113,10 @@ public class BeastTamer {
 		wolf2.setAngry(true);
 		wolf3.setAngry(true);
 		wolf4.setAngry(true);
+		wolfs.put(wolf1.getUniqueId(), p.getName());
+		wolfs.put(wolf2.getUniqueId(), p.getName());
+		wolfs.put(wolf3.getUniqueId(), p.getName());
+		wolfs.put(wolf4.getUniqueId(), p.getName());
 		wolf1.setOwner(p);
 		wolf2.setOwner(p);
 		wolf3.setOwner(p);
@@ -105,13 +125,15 @@ public class BeastTamer {
 		wolf2.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10 * 20, 4));
 		wolf3.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10 * 20, 4));
 		wolf4.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 10 * 20, 4));
-		for (Entity e : p.getNearbyEntities(20, 20, 20)){
+		for (int i = 2 ; i < 40; i++){
+		for (Entity e : p.getNearbyEntities(i, i, i)){
 			if (e instanceof Player && Game.playerInGame((Player) e)){
 				wolf1.setTarget((LivingEntity) e);
 				wolf2.setTarget((LivingEntity) e);
 				wolf3.setTarget((LivingEntity) e);
 				wolf4.setTarget((LivingEntity) e);
 			}
+		}
 		}
 		Bukkit.getScheduler().runTaskLater(Main.getPlugin(Main.class), new Runnable(){
 			public void run(){
@@ -123,8 +145,29 @@ public class BeastTamer {
 				wolf2.teleport(wolf4.getLocation().clone().subtract(0, 500, 0));
 				wolf3.teleport(wolf4.getLocation().clone().subtract(0, 500, 0));
 				wolf4.teleport(wolf4.getLocation().clone().subtract(0, 500, 0));
+				wolfs.remove(wolf1.getUniqueId());
+				wolfs.remove(wolf2.getUniqueId());
+				wolfs.remove(wolf3.getUniqueId());
+				wolfs.remove(wolf4.getUniqueId());
 			}
 		}, 5 * 20l);
+	}
+	
+	public static void checkSecond(){
+		for (Wolf wolf : Bukkit.getWorld("PrisonMap").getEntitiesByClass(Wolf.class)){
+			if (wolfs.containsKey(wolf.getUniqueId())){
+				if (wolf.getTarget().getName() == wolfs.get(wolf.getUniqueId()) || !Game.playerInGame((Player)wolf.getTarget())){
+					wolf.setTarget(null);
+				}
+			}
+			for (int i = 2 ; i < 40; i++){
+				for (Entity e : wolf.getNearbyEntities(i, i, i)){
+					if (e instanceof Player && Game.playerInGame((Player) e) && e.getName() != wolfs.get(wolf.getUniqueId())){
+						wolf.setTarget((LivingEntity) e);
+					}
+				}
+			}
+		}
 	}
 	
 	public static void attemptThird(Player p){

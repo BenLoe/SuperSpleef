@@ -9,8 +9,8 @@ public enum KitType {
 	SCOUT, BOMBER, BEASTTAMER, TANK; 
 	
 	public static KitType getKit(Player p){
-		if (Files.getDataFile().contains("Players." + p.getName() + ".Kit")){
-			String s = Files.getDataFile().getString("Players." + p.getName() + ".Kit");
+		if (Files.getDataFile().contains("Players." + p.getUniqueId() + ".Kit")){
+			String s = Files.getDataFile().getString("Players." + p.getUniqueId() + ".Kit");
 			for (KitType k : KitType.values()){
 				if (s == k.name()){
 					return k;
@@ -21,17 +21,17 @@ public enum KitType {
 	}
 	
 	public void setKit(Player p){
-		Files.getDataFile().set("Players." + p.getName() + ".Kit", this.name());
+		Files.getDataFile().set("Players." + p.getUniqueId() + ".Kit", this.name());
 		Files.saveDataFile();
 	}
 	
 	public void buyKit(Player p){
-		Files.getDataFile().set("Players." + p.getName() + "." + this.name(), true);
+		Files.getDataFile().set("Players." + p.getUniqueId() + "." + this.name(), true);
 		Files.saveDataFile();
 	}
 	public boolean ownsKit(Player p){
-		if (Files.getDataFile().contains("Players." + p.getName() + "." + this.name())){
-			return Files.getDataFile().getBoolean("Players." + p.getName() + "." + this.name());
+		if (Files.getDataFile().contains("Players." + p.getUniqueId() + "." + this.name())){
+			return Files.getDataFile().getBoolean("Players." + p.getUniqueId() + "." + this.name());
 		}
 		return false;
 	}

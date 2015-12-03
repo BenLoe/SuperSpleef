@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.Prison.Main.Traits.SpeedTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -25,6 +26,13 @@ public class GameManager {
 
 	public static int time = 0;
 	public static List<Block> regenerate = new ArrayList<Block>();
+	public static int regeni = 20;
+	
+	public static void setNewRegen(){
+		if (regeni == 20){ regeni = 30;return;}
+		if (regeni == 30){ regeni = 40;return;}
+		if (regeni == 40){ regeni = 20;return;}
+	}
 	
 	@SuppressWarnings("deprecation")
 	public static void manage(){
@@ -33,8 +41,8 @@ public class GameManager {
 		if (gs == GameState.WAITING){
 			if (inQueue >= 2){
 				Game.gs = GameState.COUNTDOWN;
-				time = 30;
-				Game.sendToAllInQueue(Game.tag + "§eGame starting in §b30 §eseconds.");
+				time = 15;
+				Game.sendToAllInQueue(Game.tag + "§eGame starting in §b15 §eseconds.");
 			}
 		}
 		if (gs == GameState.COUNTDOWN){
@@ -111,6 +119,7 @@ public class GameManager {
 					p.getInventory().setArmorContents(Game.armors.get(s));
 					p.updateInventory();
 					p.teleport(Game.getLocation("Lobby"));
+					SpeedTrait.setCorrectSpeed(p);
 					Game.watching.add(p.getName());
 				}
 				Game.ingame.clear();
@@ -131,18 +140,25 @@ public class GameManager {
 					Firework(Game.getLocation("Spawn6"), Color.YELLOW, 0);
 					Firework(Game.getLocation("Spawn7"), Color.AQUA, 0);
 					Firework(Game.getLocation("Spawn8"), Color.YELLOW, 0);
+					if (!Game.ingame.isEmpty()){
+					Firework(Bukkit.getPlayer(Game.ingame.get(0)).getLocation().add(0, 2, 0), Color.TEAL, -1);
+					}
 				}
 				if (newtime == 7 || newtime == 3){
-					Firework(Game.getLocation("Spawn1"), Color.LIME, 0);
-					Firework(Game.getLocation("Spawn2"), Color.ORANGE, 0);
-					Firework(Game.getLocation("Spawn3"), Color.LIME, 0);
-					Firework(Game.getLocation("Spawn4"), Color.ORANGE, 0);
-					Firework(Game.getLocation("Spawn5"), Color.LIME, 0);
-					Firework(Game.getLocation("Spawn6"), Color.ORANGE, 0);
-					Firework(Game.getLocation("Spawn7"), Color.LIME, 0);
-					Firework(Game.getLocation("Spawn8"), Color.ORANGE, 0);
+					Firework(Game.getLocation("Spawn1"), Color.BLUE, 0);
+					Firework(Game.getLocation("Spawn2"), Color.FUCHSIA, 0);
+					Firework(Game.getLocation("Spawn3"), Color.BLUE, 0);
+					Firework(Game.getLocation("Spawn4"), Color.FUCHSIA, 0);
+					Firework(Game.getLocation("Spawn5"), Color.BLUE, 0);
+					Firework(Game.getLocation("Spawn6"), Color.FUCHSIA, 0);
+					Firework(Game.getLocation("Spawn7"), Color.BLUE, 0);
+					Firework(Game.getLocation("Spawn8"), Color.FUCHSIA, 0);
+					if (!Game.ingame.isEmpty()){
+					Firework(Bukkit.getPlayer(Game.ingame.get(0)).getLocation().add(0, 2, 0), Color.PURPLE, -1);
+					}
 				}
 				if (newtime == 9){
+					setNewRegen();
 					Location point1 = Game.getLocation("Point1");
 					Location point2 = Game.getLocation("Point2");
 					int x1 = point2.getBlockX();
@@ -156,10 +172,7 @@ public class GameManager {
 					    for (int y = y1; y <= y2; y++) {
 					        for (int z = z1; z <= z2; z++) {
 					           Location end = point1.getWorld().getBlockAt(x, y, z).getLocation();
-					           Location ref = end.clone().subtract(0, 25, 0);
-					           if (end.getBlock().getType() != ref.getBlock().getType() || end.getBlock().getData() != ref.getBlock().getData()){
-					        	   regenerate.add(end.getBlock());
-					           }
+					           regenerate.add(end.getBlock());
 					        }
 					    }
 					}
@@ -167,19 +180,23 @@ public class GameManager {
 					if (newtime == 2){
 						for (int i = 0; i < regenerate.size(); i++){
 							Block b = regenerate.get(i);
-							Block ref = b.getLocation().clone().subtract(0, 25, 0).getBlock();
+							Block ref = b.getLocation().clone().subtract(0, regeni, 0).getBlock();
+							if (b.getType() != ref.getType() || b.getData() != ref.getData()){
 							b.setType(ref.getType());
 							b.setData(ref.getData());
+							}
 						}
 						regenerate.clear();
 					}else{
-						int i = Math.round(regenerate.size() / 7);
+						int i = Math.round(regenerate.size() / 5);
 						for (int i1 = 0; i1 < i; i1++){
 							Random r = new Random();
 							Block b = regenerate.get(r.nextInt(regenerate.size()));
-							Block ref = b.getLocation().clone().subtract(0, 25, 0).getBlock();
+							Block ref = b.getLocation().clone().subtract(0, regeni, 0).getBlock();
+							if (b.getType() != ref.getType() || b.getData() != ref.getData()){
 							b.setType(ref.getType());
 							b.setData(ref.getData());
+							}
 							regenerate.remove(b);
 						}
 					}
