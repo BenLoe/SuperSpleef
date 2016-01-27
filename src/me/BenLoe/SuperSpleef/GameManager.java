@@ -18,8 +18,10 @@ import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import me.BenLoe.SuperSpleef.Classes.BeastTamer;
 import me.BenLoe.SuperSpleef.Classes.Bomber;
 import me.BenLoe.SuperSpleef.Classes.Scout;
+import me.BenLoe.SuperSpleef.Classes.Tank;
 import me.BenLoe.SuperSpleef.Game.GameState;
 
 public class GameManager {
@@ -31,7 +33,9 @@ public class GameManager {
 	public static void setNewRegen(){
 		if (regeni == 20){ regeni = 30;return;}
 		if (regeni == 30){ regeni = 40;return;}
-		if (regeni == 40){ regeni = 20;return;}
+		if (regeni == 40){ regeni = 49;return;}
+		if (regeni == 49){ regeni = -30;return;}
+		if (regeni == -30){ regeni = 20; return;}
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -119,14 +123,18 @@ public class GameManager {
 					p.getInventory().setArmorContents(Game.armors.get(s));
 					p.updateInventory();
 					p.teleport(Game.getLocation("Lobby"));
-					SpeedTrait.setCorrectSpeed(p);
-					Game.watching.add(p.getName());
+					SpeedTrait.setCorrectSpeed(p);;
 				}
 				Game.ingame.clear();
 				Bomber.tnts.clear();
 				Bomber.ultimate.clear();
 				Scout.potionItems.clear();
 				Scout.potionItems2.clear();
+				Tank.fallings.clear();
+				BeastTamer.creeps.clear();
+				BeastTamer.pigs.clear();
+				BeastTamer.pigvs.clear();
+				BeastTamer.wolfs.clear();
 				Game.invs.clear();
 				Game.armors.clear();
 				Game.gs = GameState.WAITING;

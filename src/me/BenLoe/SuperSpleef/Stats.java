@@ -1,5 +1,7 @@
 package me.BenLoe.SuperSpleef;
 
+import java.util.List;
+
 import org.bukkit.entity.Player;
 
 
@@ -50,12 +52,24 @@ public class Stats {
 	public Stats addWins(int i){
 		Files.getDataFile().set("Players." + p.getUniqueId() + ".Wins", Wins + i);
 		Files.saveDataFile();
+		List<String> moneys = Files.getDataFile().getStringList("PlayersList");
+		if (!moneys.contains(p.getUniqueId().toString())){
+			moneys.add(p.getUniqueId().toString());
+			Files.getDataFile().set("PlayersList", moneys);
+			Files.saveDataFile();
+		}
 		return new Stats(Wins + i, GamesPlayed, p);
 	}
 	
 	public Stats addGamesPlayed(int i){
 		Files.getDataFile().set("Players." + p.getUniqueId() + ".GamesPlayed", GamesPlayed + i);
 		Files.saveDataFile();
+		List<String> moneys = Files.getDataFile().getStringList("PlayersList");
+		if (!moneys.contains(p.getUniqueId().toString())){
+			moneys.add(p.getUniqueId().toString());
+			Files.getDataFile().set("PlayersList", moneys);
+			Files.saveDataFile();
+		}
 		return new Stats(Wins, GamesPlayed + i, p);
 	}
 	

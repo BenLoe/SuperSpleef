@@ -45,7 +45,7 @@ public class Events implements Listener {
 		plugin = instance;
 	}
 
-	@EventHandler
+	@EventHandler (priority = EventPriority.HIGHEST)
 	public void inventoryChange(InventoryClickEvent event){
 		Player p = (Player) event.getWhoClicked();
 		if (KitMenu.ininv.contains(p.getName())){
@@ -53,6 +53,9 @@ public class Events implements Listener {
 				event.setCancelled(true);
 				MenuItem.getItemFromSlot(event.getRawSlot()).wasClicked(p);
 			}
+		}
+		if (Game.playerInGame(p)){
+			event.setCancelled(true);
 		}
 	}
 	
@@ -191,8 +194,8 @@ public class Events implements Listener {
 				}
 			}
 		}
-		if (!Game.watching.contains(p.getName())){
-			if ((event.getTo().getBlockX() != event.getFrom().getBlockX() || event.getTo().getBlockZ() != event.getFrom().getBlockZ())){
+		if (!Game.watching.contains(p.getName()) && !Game.ingame.contains(p.getName())){
+			if (p.getWorld().getName().equals("PrisonMap") && (event.getTo().getBlockX() != event.getFrom().getBlockX() || event.getTo().getBlockZ() != event.getFrom().getBlockZ())){
 			if ( p.getLocation().getBlock().getLocation().distance(new Location(Bukkit.getWorld("PrisonMap"), -319, 54, 295)) <= 26){
 				Game.watching.add(p.getName());
 			}

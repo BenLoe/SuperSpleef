@@ -91,7 +91,6 @@ public enum MenuItem {
 		}
 		case SHOW_STATS: {
 			List<String> lore = new ArrayList<String>();
-			lore.add("  ");
 			lore.add("§7 Money: §a" + MoneyAPI.getMoney(p));
 			lore.add("§7 Games Played: §9" + Stats.getStats(p).getGamesPlayed());
 			lore.add("§7 Wins: §b" + Stats.getStats(p).getWins());

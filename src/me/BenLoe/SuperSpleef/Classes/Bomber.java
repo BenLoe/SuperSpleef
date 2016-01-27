@@ -58,8 +58,8 @@ public class Bomber {
 			if (tnts.contains(i.getUniqueId())){
 				ParticleEffect.SMOKE_NORMAL.display(0.25f, 0.25f, 0.25f, 0.0001f, 5, i.getLocation().clone().add(0, 0.5, 0), 100);
 				if (i.getTicksLived() > 30){
-					ParticleEffect.EXPLOSION_HUGE.display(1f, 1f, 1f, 0.1f, 20, i.getLocation().clone().add(0, 1, 0), 100);
-					for (Entity e : i.getNearbyEntities(5, 5, 5)){
+					ParticleEffect.EXPLOSION_HUGE.display(0.5f, 0.5f, 0.5f, 0.1f, 5, i.getLocation().clone().add(0, 1, 0), 100);
+					for (Entity e : i.getNearbyEntities(3.5, 3.5, 3.5)){
 						if (e instanceof Player){
 							Location midPoint = i.getLocation();
 							Vector direction = e.getLocation().toVector().subtract(midPoint.toVector()).normalize();

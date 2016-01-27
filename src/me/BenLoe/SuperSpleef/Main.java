@@ -31,6 +31,10 @@ public class Main extends JavaPlugin{
 	Events events = new Events(this);
 	
 	public void onEnable(){
+		if (!Files.getDataFile().contains("PlayersList")){
+			Files.getDataFile().set("PlayersList", new ArrayList<String>());
+			Files.saveDataFile();
+		}
 		Bukkit.getPluginManager().registerEvents(events, this);
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
 			public void run(){
@@ -57,6 +61,14 @@ public class Main extends JavaPlugin{
 				BeastTamer.checkFirst();
 			}
 		}, 20l, 2l);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable(){
+			public void run(){
+				if (Files.getDataFile().getList("PlayersList").size() > 5){
+					WinLeaderboard.updateSigns();
+					GamesLeaderboard.updateSigns();
+				}
+			}
+		}, 20l, 3 * 60 * 20l);
 	}
 	
 	public void onDisable(){

@@ -101,11 +101,18 @@ public class Game {
 	}
 	
 	public static void sendToAllPlus(String message){
+		List<String> sent = new ArrayList<>();
 		for (String s : ingame){
+			if (!sent.contains(s)){
 			Bukkit.getPlayer(s).sendMessage(message);
+			sent.add(s);
+			}
 		}
 		for (String s : watching){
+			if (!sent.contains(s)){
+			sent.add(s);
 			Bukkit.getPlayer(s).sendMessage(message);
+			}
 		}
 	}
 	
@@ -138,7 +145,8 @@ public class Game {
 		inqueue.removeAll(ingame);
 		sendToAll(Game.tag + "§eGame starting.");
 		for (int i = 1; i <= inqueue.size(); i++){
-			Player p = Bukkit.getPlayer(inqueue.get(i--));
+			int util = i - 1;
+			Player p = Bukkit.getPlayer(inqueue.get(util));
 			p.sendMessage(Game.tag + "§eA game has started, you have been moved to §b" + i + "§e in queue.");
 		}
 	}
@@ -183,7 +191,7 @@ public class Game {
 			}else{
 				needed = LetterType.getPlayerLetter(p).getNeeded().getMoney();
 			}
-			int amount = Math.round(needed / 19);
+			int amount = Math.round(needed / 30);
 			p.sendMessage(ChatColor.GREEN + "+" + amount + "$");
 			MoneyAPI.addMoney(p, amount);
 			Stats.getStats(p).addWins(1).addGamesPlayed(1);
@@ -193,7 +201,6 @@ public class Game {
 	public static void Die(Player p){
 		sendToAllPlus(Game.tag + "§c" + p.getName() + " §ehas fallen and burned to death. §c" + (Game.ingame.size() - 1) + " §eplayers remain.");
 		Game.ingame.remove(p.getName());
-		Game.watching.add(p.getName());
 		p.teleport(getLocation("Lobby"));
 		SpeedTrait.setCorrectSpeed(p);
 		p.getInventory().clear();
@@ -215,12 +222,15 @@ public class Game {
 			}else{
 				needed = LetterType.getPlayerLetter(p1).getNeeded().getMoney();
 			}
-			int amount = Math.round(needed / 55);
+			int amount = Math.round(needed / 70);
 			p1.sendMessage(ChatColor.GREEN + "+" + amount + "$");
 			MoneyAPI.addMoney(p1, amount);
 		}
 		if (Bomber.ultimate.contains(p.getName())){
 			Bomber.ultimate.remove(p.getName());
+		}
+		if (!Game.watching.contains(p.getName())){
+			Game.watching.add(p.getName());
 		}
 	}
 	
@@ -247,6 +257,7 @@ public class Game {
 		ms.add(Material.STAINED_CLAY);
 		ms.add(Material.SEA_LANTERN);
 		ms.add(Material.GLOWSTONE);
+		ms.add(Material.SNOW_BLOCK);
 		if (ms.contains(m)){
 			return true;
 		}else{

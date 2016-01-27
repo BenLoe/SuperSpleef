@@ -239,6 +239,15 @@ public class BeastTamer {
 				creep1.getLocation().clone().subtract(0, 1, 1).getBlock().setType(Material.AIR);
 				creep1.getLocation().clone().subtract(-1, 1, 0).getBlock().setType(Material.AIR);
 				creep1.getLocation().clone().subtract(0, 1, -1).getBlock().setType(Material.AIR);
+				for (Entity e : creep1.getNearbyEntities(3, 3, 3)){
+					if (e instanceof Player){
+						Location midPoint = e.getLocation();
+						Vector direction = creep1.getLocation().toVector().subtract(midPoint.toVector()).normalize();
+						direction.multiply(0.6).setY(0.4);
+						e.setVelocity(direction);
+						((Player) e).damage(0.0);
+					}
+				}
 				}
 				if (creep2.getLocation().getBlockY() >= 45){
 				creep2.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
@@ -246,6 +255,15 @@ public class BeastTamer {
 				creep2.getLocation().clone().subtract(0, 1, 1).getBlock().setType(Material.AIR);
 				creep2.getLocation().clone().subtract(-1, 1, 0).getBlock().setType(Material.AIR);
 				creep2.getLocation().clone().subtract(0, 1, -1).getBlock().setType(Material.AIR);
+				for (Entity e : creep2.getNearbyEntities(3, 3, 3)){
+					if (e instanceof Player){
+						Location midPoint = e.getLocation();
+						Vector direction = creep2.getLocation().toVector().subtract(midPoint.toVector()).normalize();
+						direction.multiply(0.6).setY(0.4);
+						e.setVelocity(direction);
+						((Player) e).damage(0.0);
+					}
+				}
 				}
 				if (creep3.getLocation().getBlockY() >= 45){
 				creep3.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
@@ -253,6 +271,15 @@ public class BeastTamer {
 				creep3.getLocation().clone().subtract(0, 1, 1).getBlock().setType(Material.AIR);
 				creep3.getLocation().clone().subtract(-1, 1, 0).getBlock().setType(Material.AIR);
 				creep3.getLocation().clone().subtract(0, 1, -1).getBlock().setType(Material.AIR);
+				for (Entity e : creep3.getNearbyEntities(3, 3, 3)){
+					if (e instanceof Player){
+						Location midPoint = e.getLocation();
+						Vector direction = creep3.getLocation().toVector().subtract(midPoint.toVector()).normalize();
+						direction.multiply(0.6).setY(0.4);
+						e.setVelocity(direction);
+						((Player) e).damage(0.0);
+					}
+				}
 				}
 				if (creep4.getLocation().getBlockY() >= 45){
 				creep4.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
@@ -260,6 +287,15 @@ public class BeastTamer {
 				creep4.getLocation().clone().subtract(0, 1, 1).getBlock().setType(Material.AIR);
 				creep4.getLocation().clone().subtract(-1, 1, 0).getBlock().setType(Material.AIR);
 				creep4.getLocation().clone().subtract(0, 1, -1).getBlock().setType(Material.AIR);
+				for (Entity e : creep4.getNearbyEntities(3, 3, 3)){
+					if (e instanceof Player){
+						Location midPoint = e.getLocation();
+						Vector direction = creep4.getLocation().toVector().subtract(midPoint.toVector()).normalize();
+						direction.multiply(0.6).setY(0.4);
+						e.setVelocity(direction);
+						((Player) e).damage(0.0);
+					}
+				}
 				}
 				if (creep5.getLocation().getBlockY() >= 45){
 					creep5.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
@@ -267,6 +303,15 @@ public class BeastTamer {
 					creep5.getLocation().clone().subtract(0, 1, 1).getBlock().setType(Material.AIR);
 					creep5.getLocation().clone().subtract(-1, 1, 0).getBlock().setType(Material.AIR);
 					creep5.getLocation().clone().subtract(0, 1, -1).getBlock().setType(Material.AIR);
+					for (Entity e : creep5.getNearbyEntities(3, 3, 3)){
+						if (e instanceof Player){
+							Location midPoint = e.getLocation();
+							Vector direction = creep5.getLocation().toVector().subtract(midPoint.toVector()).normalize();
+							direction.multiply(0.6).setY(0.4);
+							e.setVelocity(direction);
+							((Player) e).damage(0.0);
+						}
+					}
 					}
 				if (creep6.getLocation().getBlockY() >= 45){
 					creep6.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
@@ -274,6 +319,15 @@ public class BeastTamer {
 					creep6.getLocation().clone().subtract(0, 1, 1).getBlock().setType(Material.AIR);
 					creep6.getLocation().clone().subtract(-1, 1, 0).getBlock().setType(Material.AIR);
 					creep6.getLocation().clone().subtract(0, 1, -1).getBlock().setType(Material.AIR);
+					for (Entity e : creep6.getNearbyEntities(3, 3, 3)){
+						if (e instanceof Player){
+							Location midPoint = e.getLocation();
+							Vector direction = creep6.getLocation().toVector().subtract(midPoint.toVector()).normalize();
+							direction.multiply(0.6).setY(0.4);
+							e.setVelocity(direction);
+							((Player) e).damage(0.0);
+						}
+					}
 					}
 				creep1.teleport(creep4.getLocation().clone().subtract(0, 500, 0));
 				creep2.teleport(creep4.getLocation().clone().subtract(0, 500, 0));
